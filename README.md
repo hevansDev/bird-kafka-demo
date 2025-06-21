@@ -11,13 +11,11 @@ Part 1 - Weigh the birds and send the data to kafka
 
 [Setup guide for bathroom scale with Raspberry Pi](https://tutorials-raspberrypi.com/digital-raspberry-pi-scale-weight-sensor-hx711/)
 
-https://huggingface.co/chriamue/bird-species-classifier/blob/main/README.md
+
 
 Part 2 - Take pictures of the birds, automatically detect species
 
-[Bird identification applet](https://github.com/Thimira/bird_watch)
-
-[Bird feeder monitoring setup](https://github.com/mmcc-xx/WhosAtMyFeeder)
+https://huggingface.co/chriamue/bird-species-classifier/blob/main/README.md
 
 Challenge - Identify individual birds based on weight and photo data
 
