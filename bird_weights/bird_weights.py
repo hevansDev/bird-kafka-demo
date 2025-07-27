@@ -13,27 +13,31 @@ def cleanAndExit():
     print("Bye!")
     sys.exit()
 
-def get_stable_weight(hx, samples=15):
-    """Get a stable weight reading by taking multiple samples and filtering outliers"""
+def get_stable_weight(hx, samples=35):
+    """Get a stable weight reading by taking multiple samples and filtering outliers very aggressively"""
     readings = []
     
     for i in range(samples):
         reading = hx.get_weight(1)
         readings.append(reading)
-        time.sleep(0.05)  # Small delay between readings
+        time.sleep(0.02)  # Faster sampling
     
     # Sort readings to identify outliers
     readings.sort()
     
-    # Remove extreme outliers (top and bottom 20%)
-    outliers_to_remove = max(1, samples // 5)  # Remove at least 1, or 20%
+    # Very aggressive outlier removal (remove top and bottom 40%)
+    outliers_to_remove = max(3, int(samples * 0.4))
     trimmed = readings[outliers_to_remove:-outliers_to_remove]
     
-    # Calculate average of remaining readings
-    if len(trimmed) > 0:
-        stable_weight = sum(trimmed) / len(trimmed)
+    # Use median of the middle values for maximum stability
+    if len(trimmed) >= 3:
+        # Take median of trimmed values
+        median_index = len(trimmed) // 2
+        stable_weight = trimmed[median_index]
     else:
-        stable_weight = readings[len(readings)//2]  # Fallback to median
+        # Fallback to overall median if too few values left
+        median_index = len(readings) // 2
+        stable_weight = readings[median_index]
     
     return stable_weight
 
@@ -62,8 +66,8 @@ print("Tare done! Waiting for birds...")
 
 while True:
     try:
-        # Get stable weight reading - NO SMOOTHING
-        current_weight = get_stable_weight(hx, samples=15)
+        # Get stable weight reading - with very aggressive filtering
+        current_weight = get_stable_weight(hx, samples=35)
         current_time = datetime.now()
         
         # Debug output
