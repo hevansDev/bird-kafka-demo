@@ -3,6 +3,7 @@ from datetime import datetime
 import sys
 import RPi.GPIO as GPIO
 from hx711 import HX711
+import cv2
 
 bird_present = False
 
@@ -41,9 +42,25 @@ def get_stable_weight(hx, samples=35):
     
     return stable_weight
 
-def bird_landed(weight):
+def take_photo(weight):
+    """Take a photo when a bird lands"""
+    cap = cv2.VideoCapture(0)
+    if cap.isOpened():
+        # Let camera adjust
+        for i in range(5):
+            ret, frame = cap.read()
+        ret, frame = cap.read()
+        if ret:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"bird_{timestamp}_{weight:.1f}g.jpg"
+            cv2.imwrite(filename, frame)
+            print(f"📸 Photo: {filename}")
+        cap.release()
+
+def bird_landed(weight, timestamp):
     """Called when a bird lands on the feeder"""
-    print(f"🐦 Bird landed at {current_time.isoformat()}! Weight: {weight:.2f}g")
+    print(f"🐦 Bird landed at {timestamp.isoformat()}! Weight: {weight:.2f}g")
+    take_photo(weight)
 
 def bird_left():
     """Called when a bird leaves the feeder"""
@@ -75,7 +92,7 @@ while True:
         
         if not bird_present and current_weight > BIRD_THRESHOLD:
             bird_present = True
-            bird_landed(current_weight)
+            bird_landed(current_weight, current_time)
         
         elif bird_present and current_weight < BIRD_THRESHOLD:
             bird_present = False
