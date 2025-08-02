@@ -24,8 +24,6 @@ I adapted Jeff's implementation of using the model for inference to label images
 
 ## Part 3 - Identify individual birds based on weight and photo data
 
-[Zero shot image classification](https://docs.voxel51.com/tutorials/zero_shot_classification.html#Evaluating-Zero-Shot-Image-Classification-Predictions-with-FiftyOne)
-
 ## Part 4 - Collect bird data and figure out average weight by species
 
 Final Result
