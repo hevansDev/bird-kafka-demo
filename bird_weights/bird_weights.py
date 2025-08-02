@@ -53,7 +53,7 @@ def take_photo(weight):
         if ret:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"bird_{timestamp}_{weight:.1f}g.jpg"
-            cv2.imwrite("./images/"+filename, frame)
+            cv2.imwrite("../images/"+filename, frame)
             print(f"📸 Photo: {filename}")
         cap.release()
 
