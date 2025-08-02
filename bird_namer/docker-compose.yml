@@ -1,0 +1,45 @@
+services:
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: semitechnologies/weaviate:1.25.0
+    ports:
+    - "8080:8080"
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      # Use multi2vec-clip for multimodal embeddings
+      DEFAULT_VECTORIZER_MODULE: 'multi2vec-clip'
+      ENABLE_MODULES: 'multi2vec-clip'
+      # Point to local CLIP service
+      CLIP_INFERENCE_API: 'http://clip-service:8080'
+      CLUSTER_HOSTNAME: 'node1'
+      # Log level for debugging
+      LOG_LEVEL: 'info'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    depends_on:
+      - clip-service
+
+  # Local CLIP inference service for multimodal embeddings
+  clip-service:
+    image: semitechnologies/multi2vec-clip:sentence-transformers-clip-ViT-B-32
+    environment:
+      ENABLE_CUDA: '0'  # Set to '1' if you have NVIDIA GPU with CUDA
+    ports:
+      - "8081:8080"  # Expose CLIP service on port 8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/.well-known/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  weaviate_data:
