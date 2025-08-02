@@ -84,11 +84,11 @@ print("Tare done! Waiting for birds...")
 while True:
     try:
         # Get stable weight reading - with very aggressive filtering
-        current_weight = get_stable_weight(hx, samples=35)
+        current_weight = get_stable_weight(hx, samples=10)
         current_time = datetime.now()
         
         # Debug output
-        print(f"Weight: {current_weight:.1f}g")
+        # print(f"Weight: {current_weight:.1f}g")
         
         if not bird_present and current_weight > BIRD_THRESHOLD:
             bird_present = True
