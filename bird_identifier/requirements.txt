@@ -1,0 +1,3 @@
+numpy
+tensorflow
+protobuf==5.28.3
